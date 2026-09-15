@@ -203,18 +203,22 @@ read_fst <- function(path, columns = NULL, from = 1, to = NULL, as.data.table = 
     }
   }
 
-  if (!is.numeric(from) || from < 1 || length(from) != 1) {
+  if (!is.numeric(from) || length(from) != 1 || !is.finite(from) || from < 1 ||
+      from > 2^53 || from != floor(from)) {
     stop("Parameter 'from' should have a numerical value equal or larger than 1.")
   }
 
-  from <- as.integer(from)
+  # Keep row selectors as doubles: R integers stop at 2^31 - 1, while the
+  # native API accepts exact doubles through 2^53 and stores positions as int64.
+  from <- as.numeric(from)
 
   if (!is.null(to)) {
-    if (!is.numeric(to) || length(to) != 1) {
+    if (!is.numeric(to) || length(to) != 1 || !is.finite(to) || to < 1 ||
+        to > 2^53 || to != floor(to)) {
       stop("Parameter 'to' should have a numerical value larger than 1 (or NULL).")
     }
 
-    to <- as.integer(to)
+    to <- as.numeric(to)
   }
 
   if (old_format != FALSE) {

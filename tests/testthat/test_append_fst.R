@@ -138,3 +138,12 @@ test_that("zero-column files accept empty columns and fst objects can read appen
   append_fst(data.frame(b = 4:6), path)
   expect_identical(as.data.frame(fst(path)), data.frame(a = 1:3, b = 4:6))
 })
+
+test_that("row selectors are not narrowed to 32-bit integers", {
+  path <- tempfile()
+  on.exit(unlink(path))
+  write_fst(data.frame(a = 1:3), path)
+  expect_error(read_fst(path, from = 2^31 + 1), "out of range")
+  expect_identical(read_fst(path, to = 2^31 + 1), data.frame(a = 1:3))
+  expect_error(read_fst(path, from = 2^53 + 2), "numerical")
+})
