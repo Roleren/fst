@@ -45,3 +45,9 @@ SEXP fstretrieve(Rcpp::String fileName, SEXP columnSelection, SEXP startRow, SEX
 {
   return fstcore::fstretrieve(fileName, columnSelection, startRow, endRow);
 }
+
+// [[Rcpp::export(rng = false)]]
+SEXP fstappend(Rcpp::String fileName, SEXP table, SEXP compression, SEXP uniformEncoding)
+{
+  return fstcore::fstappend(fileName, table, compression, uniformEncoding);
+}

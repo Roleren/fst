@@ -13,6 +13,10 @@ fstretrieve <- function(fileName, columnSelection, startRow, endRow) {
     .Call(`_fst_fstretrieve`, fileName, columnSelection, startRow, endRow)
 }
 
+fstappend <- function(fileName, table, compression, uniformEncoding) {
+    .Call(`_fst_fstappend`, fileName, table, compression, uniformEncoding)
+}
+
 fsthasher <- function(rawVec, seed, blockHash) {
     .Call(`_fst_fsthasher`, rawVec, seed, blockHash)
 }
