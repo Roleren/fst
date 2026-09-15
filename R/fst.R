@@ -239,9 +239,21 @@ read_fst <- function(path, columns = NULL, from = 1, to = NULL, as.data.table = 
     nr_of_rows <- length(res$resTable[[1]])
   }
 
-  # long vectors are not supported yet with data.table, tibble's or data.frame,
-  # so return a list instead
+  # data.table's restricted data.table_long class can represent long input
+  # vectors without pretending to support the ordinary data.table API. Use it
+  # when the installed data.table fork advertises that capability; otherwise
+  # retain the historical list fallback.
   if (nr_of_rows >= 2^31) {
+    if (requireNamespace("data.table", quietly = TRUE) &&
+        "getDTrowindex" %in% getNamespaceExports("data.table")) {
+      long_caps <- tryCatch(data.table::getDTrowindex(), error = function(e) NULL)
+      if (is.list(long_caps) &&
+          identical(long_caps$mode, "restricted-long-input") &&
+          isTRUE(long_caps$long_rbindlist) &&
+          isTRUE(long_caps$long_input_index_bits >= 64L)) {
+        return(structure(res$resTable, class = "data.table_long"))
+      }
+    }
     return(res$resTable)
   }
 
