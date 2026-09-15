@@ -192,6 +192,10 @@ write.fst <- function(x, path, compress = 50, uniform_encoding = TRUE) { # nolin
 #' requires \code{data.table} package to be installed.
 #' @param old_format must be FALSE, the old fst file format is deprecated and can only be read and
 #' converted with fst package versions 0.8.0 to 0.8.10.
+#' @return For tables with at least `2^31` rows, the result is returned as a
+#'   restricted `data.table_long` object when the installed data.table fork
+#'   advertises that format; otherwise the underlying list of columns is
+#'   returned. Shorter results are returned as a data.frame or data.table.
 #'
 #' @export
 read_fst <- function(path, columns = NULL, from = 1, to = NULL, as.data.table = FALSE, old_format = FALSE) { # nolint

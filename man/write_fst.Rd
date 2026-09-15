@@ -60,6 +60,11 @@ converted with fst package versions 0.8.0 to 0.8.10.}
 \value{
 `read_fst` returns a data frame with the selected columns and rows. `write_fst`
 writes `x` to a `fst` file and invisibly returns `x` (so you can use this function in a pipeline).
+
+For tables with at least `2^31` rows, the result is returned as a
+  restricted `data.table_long` object when the installed data.table fork
+  advertises that format; otherwise the underlying list of columns is
+  returned. Shorter results are returned as a data.frame or data.table.
 }
 \description{
 Read and write data frames from and to a fast-storage (`fst`) file.
