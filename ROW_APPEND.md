@@ -3,7 +3,7 @@
 This branch provides `append_rows_fst()` alongside `append_columns_fst()` for columns.
 To replace existing columns by name, see [column replacement](COLUMN_REPLACEMENT.md).
 It requires the matching `Roleren/fstcore` branch `feature/append-rows`
-(fstcore >= 0.10.0.9001; fst >= 0.9.9.9001).
+(fstcore >= 0.10.0.9002; fst >= 0.9.9.9003).
 
 ```r
 library(data.table)

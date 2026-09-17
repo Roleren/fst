@@ -185,21 +185,23 @@ incremental manifest before adopting that workload.
 
 ## Reproduce
 
-From this report directory, with the matching forks installed in `R-library`
+From the fst repository root, with the matching forks installed in `R-library`
 or otherwise available on `.libPaths()`:
 
 ```sh
-Rscript benchmarks/benchmark_row_append.R 2000000 32 20000 integer 3
-Rscript benchmarks/benchmark_row_append.R 2000000 128 20000 integer 3
-Rscript benchmarks/benchmark_row_append.R 2000000 512 20000 integer 3
-Rscript benchmarks/benchmark_row_append.R 200000 4000 2000 integer 3
-Rscript benchmarks/benchmark_row_append.R 2000000 128 20000 double 3
-Rscript benchmarks/benchmark_row_append.R 2000000 4000 20000 integer 3 append-only
-Rscript benchmarks/validate_row_append_64bit.R
-python3 benchmarks/validate_row_external.py
+Rscript benchmarks/row_append/benchmark_row_append.R 2000000 32 20000 integer 3
+Rscript benchmarks/row_append/benchmark_row_append.R 2000000 128 20000 integer 3
+Rscript benchmarks/row_append/benchmark_row_append.R 2000000 512 20000 integer 3
+Rscript benchmarks/row_append/benchmark_row_append.R 200000 4000 2000 integer 3
+Rscript benchmarks/row_append/benchmark_row_append.R 2000000 128 20000 double 3
+Rscript benchmarks/row_append/benchmark_row_append.R 2000000 4000 20000 integer 3 append-only
+Rscript benchmarks/row_append/validate_row_append_64bit.R
+python3 benchmarks/row_append/validate_row_external.py
 ```
 
-Raw measurements and R session details are in `results-row/`. Execution logs are
+Recorded measurements are in [results-row](results-row). Re-running the benchmark
+writes measurements and session details to `results-row/` at the repository root.
+Original execution logs remain in the local `fst_update_docs` workspace:
 `benchmark-row-final.log`, `test-row-core-full.log`, `test-row-fst-full.log`,
 `test-row-external.log`, `test-row-64bit.log` and `test-row-example.log`.
 The external compatibility test requires upstream fst/fstcore in the default R
