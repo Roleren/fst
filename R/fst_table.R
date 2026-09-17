@@ -441,38 +441,20 @@ return_drop <- function(x, drop) {
     i <- which(i)
   }
 
-  # cast to integer and determine row range
-  i <- as.integer(i)
-
-  # empty row selection
-  if (length(i) == 0) {
-    min_row <- 1
-    max_row <- 1
-  } else {
-    min_row <- min(i)
-    max_row <- max(i)
-
-    # boundary check
-    if (min_row < 0) {
-      stop("Row selection out of range")
-    }
-
-    if (max_row > meta_info$nrOfRows) {
-      stop("Row selection out of range")
-    }
-  }
-
-  # column subset
-
-  # select all columns
-  if (missing(j)) {
-    fst_data <- read_fst(meta_info$path, from = min_row, to = max_row)
-    x <- fst_data[1 + i - min_row, ] # row selection, no dropping
-  } else {
-    j <- .column_indexes_fst(meta_info, j)
-    fst_data <- read_fst(meta_info$path, j, from = min_row, to = max_row)
-    x <- fst_data[1 + i - min_row, , drop = FALSE] # row selection, no dropping
-  }
+  # Keep exact 64-bit-capable row positions. Zero indexes select nothing.
+  if (any(!is.finite(i) | i < 0 | i > meta_info$nrOfRows | i > 2^53 | i != floor(i)))
+    stop("Row selection out of range or not a finite whole number")
+  i <- as.numeric(i[i != 0])
+  columns <- if (missing(j)) NULL else .column_indexes_fst(meta_info, j)
+  # Compact consecutive ascending indexes before passing to the native planner.
+  # Dense strided selections are coalesced by that planner at codec block size.
+  if (length(i)) {
+    begin <- c(1, which(diff(i) != 1) + 1)
+    end <- c(begin[-1] - 1, length(i))
+    from <- i[begin]; to <- i[end]
+  } else from <- to <- numeric()
+  x <- read_fst(meta_info$path, columns, from = from, to = to)
+  if (missing(j) && length(x) == 1L && (missing(drop) || isTRUE(drop))) drop_dim <- TRUE
 
   if (!drop_dim) {
     return(x)

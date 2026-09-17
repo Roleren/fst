@@ -17,7 +17,8 @@ read_fst(
   from = 1,
   to = NULL,
   as.data.table = FALSE,
-  old_format = FALSE
+  old_format = FALSE,
+  merge_gap = getOption("fst.read_merge_gap", NULL)
 )
 
 read.fst(
@@ -46,9 +47,14 @@ character columns.}
 
 \item{columns}{Column names to read. The default is to read all columns.}
 
-\item{from}{Read data starting from this row number.}
+\item{from}{Positive whole row number(s). With multiple values, each pair of
+`from` and `to` specifies an inclusive interval. Results concatenate intervals
+in input order, retaining overlaps and duplicates. Empty paired vectors
+return zero rows.}
 
-\item{to}{Read data up until this row number. The default is to read to the last row of the stored dataset.}
+\item{to}{Inclusive interval endpoint(s), the same length as `from` without
+recycling. Endpoints beyond the file are clipped. NULL reads to the last
+row and is supported only with a single `from`.}
 
 \item{as.data.table}{If TRUE, the result will be returned as a \code{data.table} object. Any keys set on
 dataset \code{x} before writing will be retained. This allows for storage of sorted datasets. This option
@@ -56,6 +62,11 @@ requires \code{data.table} package to be installed.}
 
 \item{old_format}{must be FALSE, the old fst file format is deprecated and can only be read and
 converted with fst package versions 0.8.0 to 0.8.10.}
+
+\item{merge_gap}{NULL chooses a compression-block-sized gap for coalescing
+nearby reads. A non-negative whole number overrides the maximum gap in rows.
+Requests sharing a compression block can always be combined. Coalesced
+scratch windows are bounded; this affects I/O only, never returned rows.}
 }
 \value{
 `read_fst` returns a data frame with the selected columns and rows. `write_fst`

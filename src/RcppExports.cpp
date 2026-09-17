@@ -36,8 +36,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // fstretrieve
-SEXP fstretrieve(Rcpp::String fileName, SEXP columnSelection, SEXP startRow, SEXP endRow);
-RcppExport SEXP _fst_fstretrieve(SEXP fileNameSEXP, SEXP columnSelectionSEXP, SEXP startRowSEXP, SEXP endRowSEXP) {
+SEXP fstretrieve(Rcpp::String fileName, SEXP columnSelection, SEXP startRow, SEXP endRow, SEXP mergeGap);
+RcppExport SEXP _fst_fstretrieve(SEXP fileNameSEXP, SEXP columnSelectionSEXP, SEXP startRowSEXP, SEXP endRowSEXP, SEXP mergeGapSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -45,7 +45,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type columnSelection(columnSelectionSEXP);
     Rcpp::traits::input_parameter< SEXP >::type startRow(startRowSEXP);
     Rcpp::traits::input_parameter< SEXP >::type endRow(endRowSEXP);
-    rcpp_result_gen = Rcpp::wrap(fstretrieve(fileName, columnSelection, startRow, endRow));
+    Rcpp::traits::input_parameter< SEXP >::type mergeGap(mergeGapSEXP);
+    rcpp_result_gen = Rcpp::wrap(fstretrieve(fileName, columnSelection, startRow, endRow, mergeGap));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -171,7 +172,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_fst_fststore", (DL_FUNC) &_fst_fststore, 4},
     {"_fst_fstmetadata", (DL_FUNC) &_fst_fstmetadata, 1},
-    {"_fst_fstretrieve", (DL_FUNC) &_fst_fstretrieve, 4},
+    {"_fst_fstretrieve", (DL_FUNC) &_fst_fstretrieve, 5},
     {"_fst_fstappend", (DL_FUNC) &_fst_fstappend, 4},
     {"_fst_fstappendrows", (DL_FUNC) &_fst_fstappendrows, 4},
     {"_fst_fstreplacecolumns", (DL_FUNC) &_fst_fstreplacecolumns, 4},

@@ -3,6 +3,14 @@
 
 ## Enhancements
 
+* `read_fst()` and `read.fst()` accept vectors for `from`/`to`, each pair
+  specifying an inclusive row interval; results concatenate intervals in
+  input order, keeping overlaps and duplicates. A new `merge_gap` argument
+  bounds how far apart requested rows can be while still sharing one physical
+  read. `[.fst_table` now dispatches arbitrary row-index selections through
+  the same multi-range reader instead of reading the full `min(i):max(i)`
+  block. See `MULTI_RANGE_RESULTS.md` in the fork's docs for benchmarks.
+
 ## Bugs solved
 
 ## Library updates

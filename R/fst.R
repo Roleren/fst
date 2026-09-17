@@ -185,8 +185,17 @@ write.fst <- function(x, path, compress = 50, uniform_encoding = TRUE) { # nolin
 #' @rdname write_fst
 #'
 #' @param columns Column names to read. The default is to read all columns.
-#' @param from Read data starting from this row number.
-#' @param to Read data up until this row number. The default is to read to the last row of the stored dataset.
+#' @param from Positive whole row number(s). With multiple values, each pair of
+#'   `from` and `to` specifies an inclusive interval. Results concatenate intervals
+#'   in input order, retaining overlaps and duplicates. Empty paired vectors
+#'   return zero rows.
+#' @param to Inclusive interval endpoint(s), the same length as `from` without
+#'   recycling. Endpoints beyond the file are clipped. NULL reads to the last
+#'   row and is supported only with a single `from`.
+#' @param merge_gap NULL chooses a compression-block-sized gap for coalescing
+#'   nearby reads. A non-negative whole number overrides the maximum gap in rows.
+#'   Requests sharing a compression block can always be combined. Coalesced
+#'   scratch windows are bounded; this affects I/O only, never returned rows.
 #' @param as.data.table If TRUE, the result will be returned as a \code{data.table} object. Any keys set on
 #' dataset \code{x} before writing will be retained. This allows for storage of sorted datasets. This option
 #' requires \code{data.table} package to be installed.
@@ -198,7 +207,8 @@ write.fst <- function(x, path, compress = 50, uniform_encoding = TRUE) { # nolin
 #'   returned. Shorter results are returned as a data.frame or data.table.
 #'
 #' @export
-read_fst <- function(path, columns = NULL, from = 1, to = NULL, as.data.table = FALSE, old_format = FALSE) { # nolint
+read_fst <- function(path, columns = NULL, from = 1, to = NULL, as.data.table = FALSE, old_format = FALSE,
+                     merge_gap = getOption("fst.read_merge_gap", NULL)) { # nolint
   file_name <- normalizePath(path, mustWork = FALSE)
 
   if (!is.null(columns)) {
@@ -207,8 +217,7 @@ read_fst <- function(path, columns = NULL, from = 1, to = NULL, as.data.table = 
     }
   }
 
-  if (!is.numeric(from) || length(from) != 1 || !is.finite(from) || from < 1 ||
-      from > 2^53 || from != floor(from)) {
+  if (!is.numeric(from) || any(!is.finite(from) | from < 1 | from > 2^53 | from != floor(from))) {
     stop("Parameter 'from' should have a numerical value equal or larger than 1.")
   }
 
@@ -217,12 +226,15 @@ read_fst <- function(path, columns = NULL, from = 1, to = NULL, as.data.table = 
   from <- as.numeric(from)
 
   if (!is.null(to)) {
-    if (!is.numeric(to) || length(to) != 1 || !is.finite(to) || to < 1 ||
-        to > 2^53 || to != floor(to)) {
+    if (!is.numeric(to) || length(to) != length(from) ||
+        any(!is.finite(to) | to < 1 | to > 2^53 | to != floor(to))) {
       stop("Parameter 'to' should have a numerical value larger than 1 (or NULL).")
     }
 
     to <- as.numeric(to)
+    if (any(to < from)) stop("Each interval must have from <= to.")
+  } else if (length(from) != 1L) {
+    stop("Parameter 'to' may be NULL only for a single starting row.")
   }
 
   if (old_format != FALSE) {
@@ -232,7 +244,7 @@ read_fst <- function(path, columns = NULL, from = 1, to = NULL, as.data.table = 
     )
   }
 
-  res <- fstretrieve(file_name, columns, from, to)
+  res <- fstretrieve(file_name, columns, from, to, merge_gap)
 
   if (inherits(res, "fst_error")) {
     stop(res)

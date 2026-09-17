@@ -41,9 +41,9 @@ SEXP fstmetadata(Rcpp::String fileName)
 
 
 // [[Rcpp::export]]
-SEXP fstretrieve(Rcpp::String fileName, SEXP columnSelection, SEXP startRow, SEXP endRow)
+SEXP fstretrieve(Rcpp::String fileName, SEXP columnSelection, SEXP startRow, SEXP endRow, SEXP mergeGap = R_NilValue)
 {
-  return fstcore::fstretrieve(fileName, columnSelection, startRow, endRow);
+  return fstcore::fstretrieve(fileName, columnSelection, startRow, endRow, mergeGap);
 }
 
 // [[Rcpp::export(rng = false)]]
