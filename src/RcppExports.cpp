@@ -62,6 +62,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// fstappendrows
+SEXP fstappendrows(Rcpp::String fileName, SEXP table, SEXP compression, SEXP uniformEncoding);
+RcppExport SEXP _fst_fstappendrows(SEXP fileNameSEXP, SEXP tableSEXP, SEXP compressionSEXP, SEXP uniformEncodingSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::String >::type fileName(fileNameSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type table(tableSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type compression(compressionSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type uniformEncoding(uniformEncodingSEXP);
+    rcpp_result_gen = Rcpp::wrap(fstappendrows(fileName, table, compression, uniformEncoding));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fstreplacecolumns
+SEXP fstreplacecolumns(Rcpp::String fileName, SEXP table, SEXP compression, SEXP uniformEncoding);
+RcppExport SEXP _fst_fstreplacecolumns(SEXP fileNameSEXP, SEXP tableSEXP, SEXP compressionSEXP, SEXP uniformEncodingSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::String >::type fileName(fileNameSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type table(tableSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type compression(compressionSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type uniformEncoding(uniformEncodingSEXP);
+    rcpp_result_gen = Rcpp::wrap(fstreplacecolumns(fileName, table, compression, uniformEncoding));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fsthasher
 SEXP fsthasher(SEXP rawVec, SEXP seed, SEXP blockHash);
 RcppExport SEXP _fst_fsthasher(SEXP rawVecSEXP, SEXP seedSEXP, SEXP blockHashSEXP) {
@@ -147,6 +173,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fst_fstmetadata", (DL_FUNC) &_fst_fstmetadata, 1},
     {"_fst_fstretrieve", (DL_FUNC) &_fst_fstretrieve, 4},
     {"_fst_fstappend", (DL_FUNC) &_fst_fstappend, 4},
+    {"_fst_fstappendrows", (DL_FUNC) &_fst_fstappendrows, 4},
+    {"_fst_fstreplacecolumns", (DL_FUNC) &_fst_fstreplacecolumns, 4},
     {"_fst_fsthasher", (DL_FUNC) &_fst_fsthasher, 3},
     {"_fst_fstcomp", (DL_FUNC) &_fst_fstcomp, 4},
     {"_fst_fstdecomp", (DL_FUNC) &_fst_fstdecomp, 1},

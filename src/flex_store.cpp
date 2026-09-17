@@ -51,3 +51,15 @@ SEXP fstappend(Rcpp::String fileName, SEXP table, SEXP compression, SEXP uniform
 {
   return fstcore::fstappend(fileName, table, compression, uniformEncoding);
 }
+
+// [[Rcpp::export(rng = false)]]
+SEXP fstappendrows(Rcpp::String fileName, SEXP table, SEXP compression, SEXP uniformEncoding)
+{
+  return fstcore::fstappendrows(fileName, table, compression, uniformEncoding);
+}
+
+// [[Rcpp::export(rng = false)]]
+SEXP fstreplacecolumns(Rcpp::String fileName, SEXP table, SEXP compression, SEXP uniformEncoding)
+{
+  return fstcore::fstreplacecolumns(fileName, table, compression, uniformEncoding);
+}

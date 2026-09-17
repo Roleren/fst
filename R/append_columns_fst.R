@@ -29,10 +29,10 @@
 #' @examples
 #' path <- tempfile(fileext = ".fst")
 #' write_fst(data.frame(lib1 = 1:3), path)
-#' append_fst(data.frame(lib2 = c(0L, 4L, 2L)), path)
+#' append_columns_fst(data.frame(lib2 = c(0L, 4L, 2L)), path)
 #' read_fst(path)
 #' unlink(path)
-append_fst <- function(x, path, compress = 50, uniform_encoding = TRUE) {
+append_columns_fst <- function(x, path, compress = 50, uniform_encoding = TRUE) {
   if (!is.character(path) || length(path) != 1L || is.na(path) || !nzchar(path)) {
     stop("Please specify a single, non-empty path.")
   }

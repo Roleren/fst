@@ -17,6 +17,14 @@ fstappend <- function(fileName, table, compression, uniformEncoding) {
     .Call(`_fst_fstappend`, fileName, table, compression, uniformEncoding)
 }
 
+fstappendrows <- function(fileName, table, compression, uniformEncoding) {
+    .Call(`_fst_fstappendrows`, fileName, table, compression, uniformEncoding)
+}
+
+fstreplacecolumns <- function(fileName, table, compression, uniformEncoding) {
+    .Call(`_fst_fstreplacecolumns`, fileName, table, compression, uniformEncoding)
+}
+
 fsthasher <- function(rawVec, seed, blockHash) {
     .Call(`_fst_fsthasher`, rawVec, seed, blockHash)
 }

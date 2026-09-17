@@ -14,6 +14,73 @@ badge](https://fastverse.r-universe.dev/badges/fst)](https://fastverse.r-univers
 [![downloads](https://cranlogs.r-pkg.org/badges/fst)](http://cran.rstudio.com/web/packages/fst/index.html)
 [![total_downloads](https://cranlogs.r-pkg.org/badges/grand-total/fst)](http://cran.rstudio.com/web/packages/fst/index.html)
 
+## This fork: update fst files on disk
+
+This fork adds `append_columns_fst()`, `append_rows_fst()` and
+`replace_existing_columns()`. They write new payloads and update the file's
+metadata while reusing unchanged column data, so adding a library or a batch of
+rows does not require loading and rewriting the whole table.
+
+Install both matching forks, with fstcore first:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("Roleren/fstcore", ref = "feature/append-rows")
+remotes::install_github("Roleren/fst", ref = "feature/append-rows")
+```
+
+Here is a complete example, starting with just one value:
+
+
+``` r
+library(data.table)
+file <- tempfile(fileext = ".fst")
+
+# Save one value.
+fst::write_fst(data.table(a = 1), file)
+fst::read_fst(file)
+#>   a
+#> 1 1
+
+# Append one column on disk.
+fst::append_columns_fst(data.table(b = 1), file)
+fst::read_fst(file)
+#>   a b
+#> 1 1 1
+
+# Append one row on disk.
+fst::append_rows_fst(data.table(a = 2, b = 2), file)
+fst::read_fst(file)
+#>   a b
+#> 1 1 1
+#> 2 2 2
+
+# Change b in row 2 to 3 by replacing column b.
+# Replacement supplies the whole column, keeping row 1 at 1.
+fst::replace_existing_columns(file, data.table(b = c(1, 3)))
+fst::read_fst(file)
+#>   a b
+#> 1 1 1
+#> 2 2 3
+
+unlink(file)
+```
+
+Column replacement matches names and requires the same stored type and row
+count, without coercion or recycling. Row append requires a matching schema.
+These extensions require the matching Roleren fstcore fork (>= 0.10.0.9002) and
+this fst fork (>= 0.9.9.9003); CRAN packages do not provide these APIs. Restart R
+after updating packages that are already loaded.
+
+Extended files require a compatible fork reader. Old payloads and metadata can
+accumulate, so repeated updates may need compaction. Updates use a cooperative
+writer lock, but root publication is not crash-atomic or power-loss durable;
+callers must exclude ordinary readers and writers during updates.
+
+See [column append](COLUMN_APPEND.md), [row append](ROW_APPEND.md),
+[column replacement](COLUMN_REPLACEMENT.md) and the
+[row-append benchmarks](benchmarks/row_append/RESULTS.md) for details.
+
 ## Overview
 
 The [*fst* package](https://github.com/fstpackage/fst) for R provides a

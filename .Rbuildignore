@@ -21,3 +21,4 @@ LZ4/LICENSE$
 ^revdep$
 ^\.github$
 ^CRAN-SUBMISSION$
+^benchmarks$

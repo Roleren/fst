@@ -1,0 +1,4 @@
+"rows","columns","added_rows","kind","mode","repetition","threads","compression","nonzero_fraction","base_bytes","added_bytes","rewrite_bytes","rewrite_seconds","append_seconds","read_segmented_seconds","read_compact_seconds","all_values_verified"
+2000000,128,20000,"integer","compare",1,4,50,0.01,26596096,279917,26859969,2.614,0.024,0.0890000000000004,0.0850000000000009,TRUE
+2000000,128,20000,"integer","compare",2,4,50,0.01,26596096,279917,26859969,2.572,0.00999999999999979,0.0910000000000011,0.0820000000000007,TRUE
+2000000,128,20000,"integer","compare",3,4,50,0.01,26596096,279917,26859969,2.589,0.0269999999999992,0.0890000000000004,0.0820000000000007,TRUE
