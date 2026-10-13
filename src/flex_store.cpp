@@ -66,14 +66,21 @@ SEXP fstreplacecolumns(Rcpp::String fileName, SEXP table, SEXP compression, SEXP
 
 // [[Rcpp::export(rng = false)]]
 SEXP fstwriterle(Rcpp::String fileName, SEXP values, SEXP lengths, SEXP colNames, double start, double end,
-  SEXP compression, SEXP uniformEncoding)
+  SEXP compression, SEXP uniformEncoding, bool runsAreEnds)
 {
-  return fstcore::fstwriterle(fileName, values, lengths, colNames, start, end, compression, uniformEncoding);
+  return fstcore::fstwriterle(fileName, values, lengths, colNames, start, end, compression, uniformEncoding, runsAreEnds);
 }
 
 // [[Rcpp::export(rng = false)]]
 SEXP fstappendrle(Rcpp::String fileName, SEXP values, SEXP lengths, SEXP colNames, double start, double end,
-  SEXP compression, SEXP uniformEncoding)
+  SEXP compression, SEXP uniformEncoding, bool runsAreEnds)
 {
-  return fstcore::fstappendrle(fileName, values, lengths, colNames, start, end, compression, uniformEncoding);
+  return fstcore::fstappendrle(fileName, values, lengths, colNames, start, end, compression, uniformEncoding, runsAreEnds);
+}
+
+// [[Rcpp::export(rng = false)]]
+SEXP fstreplacerle(Rcpp::String fileName, SEXP values, SEXP lengths, SEXP colNames, double start, double end,
+  SEXP compression, SEXP uniformEncoding, bool runsAreEnds)
+{
+  return fstcore::fstreplacerle(fileName, values, lengths, colNames, start, end, compression, uniformEncoding, runsAreEnds);
 }

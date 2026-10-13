@@ -11,7 +11,11 @@
 #' out-of-range values become \code{NA}).
 #'
 #' @param values List of numeric or integer vectors: run values, one element per column.
-#' @param lengths List of integer vectors: run lengths, parallel to \code{values}.
+#' @param lengths List of run lengths (integer vectors), parallel to \code{values}; or, with
+#'   \code{ends = TRUE}, cumulative run ends (\code{cumsum(lengths)}, integer or double). Ends let each window
+#'   find its first run by binary search instead of a scan; compute them once per vector and reuse them
+#'   for every window of that vector.
+#' @param ends Logical, whether \code{lengths} holds cumulative run ends (must be nondecreasing).
 #' @param names Character vector of unique, non-empty column names.
 #' @param from,to Window of positions (1-based, inclusive) to store; \code{to - from + 1} rows.
 #' @param path Path of the fst file to create (\code{write_rle_columns_fst}) or append to
@@ -26,20 +30,36 @@
 #'                       c("lib1", "lib2"), from = 2, to = 9, path = path)
 #' read_fst(path)
 #' unlink(path)
-write_rle_columns_fst <- function(values, lengths, names, from, to, path, compress = 50, uniform_encoding = TRUE) {
+write_rle_columns_fst <- function(values, lengths, names, from, to, path, compress = 50, uniform_encoding = TRUE,
+                                  ends = FALSE) {
   check_rle_args(values, lengths, names, from, to, path, compress)
   result <- fstwriterle(path.expand(path), values, lengths, names, as.numeric(from), as.numeric(to),
-                        as.integer(compress), uniform_encoding)
+                        as.integer(compress), uniform_encoding, isTRUE(ends))
   if (inherits(result, "fst_error")) stop(result)
   invisible(path)
 }
 
 #' @rdname write_rle_columns_fst
 #' @export
-append_rle_columns_fst <- function(values, lengths, names, from, to, path, compress = 50, uniform_encoding = TRUE) {
+append_rle_columns_fst <- function(values, lengths, names, from, to, path, compress = 50, uniform_encoding = TRUE,
+                                   ends = FALSE) {
   check_rle_args(values, lengths, names, from, to, path, compress)
   result <- fstappendrle(normalizePath(path, mustWork = TRUE), values, lengths, names, as.numeric(from),
-                         as.numeric(to), as.integer(compress), uniform_encoding)
+                         as.numeric(to), as.integer(compress), uniform_encoding, isTRUE(ends))
+  if (inherits(result, "fst_error")) stop(result)
+  invisible(path)
+}
+
+#' @rdname write_rle_columns_fst
+#' @details \code{replace_rle_columns_fst} replaces existing plain integer columns, matched by name, with the
+#'   given windows (same rules as \code{\link{replace_existing_columns}}: the file keeps the old payloads
+#'   until it is rewritten).
+#' @export
+replace_rle_columns_fst <- function(values, lengths, names, from, to, path, compress = 50, uniform_encoding = TRUE,
+                                    ends = FALSE) {
+  check_rle_args(values, lengths, names, from, to, path, compress)
+  result <- fstreplacerle(normalizePath(path, mustWork = TRUE), values, lengths, names, as.numeric(from),
+                          as.numeric(to), as.integer(compress), uniform_encoding, isTRUE(ends))
   if (inherits(result, "fst_error")) stop(result)
   invisible(path)
 }
