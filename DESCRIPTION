@@ -17,6 +17,8 @@ LinkingTo:
     Rcpp,
     fstcore (>= 0.10.0.9005)
 SystemRequirements: little-endian platform
+Remotes:
+    Roleren/fstcore@master
 RoxygenNote: 7.3.3
 Suggests:
     testthat,
