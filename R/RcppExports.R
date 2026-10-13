@@ -25,6 +25,14 @@ fstreplacecolumns <- function(fileName, table, compression, uniformEncoding) {
     .Call(`_fst_fstreplacecolumns`, fileName, table, compression, uniformEncoding)
 }
 
+fstwriterle <- function(fileName, values, lengths, colNames, start, end, compression, uniformEncoding) {
+    .Call(`_fst_fstwriterle`, fileName, values, lengths, colNames, start, end, compression, uniformEncoding)
+}
+
+fstappendrle <- function(fileName, values, lengths, colNames, start, end, compression, uniformEncoding) {
+    .Call(`_fst_fstappendrle`, fileName, values, lengths, colNames, start, end, compression, uniformEncoding)
+}
+
 fsthasher <- function(rawVec, seed, blockHash) {
     .Call(`_fst_fsthasher`, rawVec, seed, blockHash)
 }
